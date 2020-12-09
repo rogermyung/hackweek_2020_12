@@ -1,0 +1,21 @@
+  
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: CCE-SSR-Example-App
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: CCE-SSR-Example-App
+  template:
+    metadata:
+      labels:
+        app: CCE-SSR-Example-App
+    spec:
+      containers:
+      - image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:cc02c6c15c43918163a77a0390244ea7960b8480
+        name: eks-beta-208024-ssr_example_app
+        ports:
+        - containerPort: 80
