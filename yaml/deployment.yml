@@ -14,7 +14,7 @@ spec:
         app: CCE-SSR-Example-App
     spec:
       containers:
-        - image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:5933e54ff6d7155441dcf3eadc5c0d721c71363e
+        - image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:794ce85997cd5a6664f2ff2aa3d7b6c233a3cf4b
           name: eks-beta-208024-ssr_example_app
           ports:
             - containerPort: 80
