@@ -1,20 +1,358 @@
+---
+# Source: app-template/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: beta-ssr-example
+  labels:
+    helm-chart-release: app-template-0.6.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::097916242697:role/eks/role-eks-beta-207972-ssr-example-us-east-2"
+---
+# Source: app-template/charts/cluster-ingress-template/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: beta-ssr-example
+  labels:
+    helm-chart-release: cluster-ingress-template-0.1.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  selector:
+    app: beta-ssr-example
+    app-id: "207972"
+    environment: beta
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+---
+# Source: app-template/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: CCE-SSR-Example-App
+  name: beta-ssr-example
+  labels:
+    helm-chart-release: app-template-0.6.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+    canary: "false"
 spec:
   replicas: 1
-  revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: CCE-SSR-Example-App
+      app-id: "207972"
+      app: beta-ssr-example
+      environment: beta
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 100%
   template:
     metadata:
       labels:
-        app: CCE-SSR-Example-App
+        helm-chart-release: app-template-0.6.0
+        release: ssr-example
+        app-id: "207972"
+        app: beta-ssr-example
+        environment: beta
+        development-team-email: rockettechccesystems
+        deploy-date: 2020-12-10
+        canary: "false"
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values: [beta-ssr-example]
+              topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: beta-ssr-example
       containers:
-        - image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:794ce85997cd5a6664f2ff2aa3d7b6c233a3cf4b
-          name: eks-beta-208024-ssr_example_app
+        - name: beta-ssr-example
+          image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:5933e54ff6d7155441dcf3eadc5c0d721c71363e
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 2000
+            allowPrivilegeEscalation: false
+          env:
+            - name: AWS_REGION
+              value: "us-east-2"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "beta"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 15
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
           ports:
-            - containerPort: 80
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 125m
+              memory: 128Mi
+      securityContext:
+        fsGroup: 65534
+---
+# Source: app-template/templates/hpa.yaml
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: beta-ssr-example
+  labels:
+    helm-chart-release: app-template-0.6.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: beta-ssr-example
+  minReplicas: 1
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+---
+# Source: app-template/charts/external-ingress-template/templates/ingress-gateway.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: beta-ssr-example
+  annotations:
+    route53/health-check-path: /
+    route53/health-check-fqdn: "us-east-2-ssr-example.beta.ccessr.foc.zone"
+    zalando.org/aws-load-balancer-scheme: internet-facing
+    kubernetes.io/ingress.class: alb-istio
+    external-dns.alpha.kubernetes.io/aws-region: us-east-2
+    external-dns.alpha.kubernetes.io/set-identifier: beta-ssr-example-us-east-2
+  labels:
+    helm-chart-release: external-ingress-template-0.1.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  rules:
+  - host: "ssr-example.beta.ccessr.foc.zone"
+    http:
+      paths:
+      - backend:
+          serviceName: beta-ssr-example
+          servicePort: 80
+  - host: "us-east-2-ssr-example.beta.ccessr.foc.zone"
+    http:
+      paths:
+      - backend:
+          serviceName: beta-ssr-example
+          servicePort: 80
+---
+# Source: app-template/charts/cluster-ingress-template/templates/authorization-policy.yaml
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: "scratch-sleep-beta-ssr-example-rbac"
+  labels:
+    helm-chart-release: cluster-ingress-template-0.1.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  selector:
+    matchLabels:
+      app: beta-ssr-example
+      app-id: "207972"
+      environment: beta
+  rules:
+  - from:
+    - source:
+        principals:
+        - "cluster.local/ns/scratch/sa/sleep"
+    to:
+    - operation:
+        methods:
+        - "*"
+        paths:
+        - "/*"
+---
+# Source: app-template/charts/external-ingress-template/templates/jwt-authorization-policy.yaml
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: "beta-ssr-example-jwt"
+  namespace: ssr
+  labels:
+    helm-chart-release: external-ingress-template-0.1.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  selector:
+    matchLabels:
+      app: beta-ssr-example
+      app-id: "207972"
+      environment: beta
+  rules:
+    - to:
+      - operation:
+          methods: ["GET"]
+          paths:
+          - /
+          hosts:
+          - "ssr-example.beta.ccessr.foc.zone"
+          - "us-east-2-ssr-example.beta.ccessr.foc.zone"
+    - from:
+      - source:
+          principals: ["cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"]
+      to:
+      - operation:
+          hosts:
+          - "ssr-example.beta.ccessr.foc.zone"
+          - "us-east-2-ssr-example.beta.ccessr.foc.zone"
+          methods:
+          - "*"
+          paths:
+          - "/*"
+---
+# Source: app-template/charts/cluster-ingress-template/templates/destination-rule.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: beta-ssr-example
+spec:
+  host: beta-ssr-example.ssr.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+  - name: primary
+    labels:
+      app: beta-ssr-example
+      app-id: "207972"
+      environment: beta
+---
+# Source: app-template/charts/external-ingress-template/templates/ingress-gateway.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: beta-ssr-example
+  labels:
+    helm-chart-release: external-ingress-template-0.1.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "ssr-example.beta.ccessr.foc.zone"
+    - "us-east-2-ssr-example.beta.ccessr.foc.zone"
+---
+# Source: app-template/charts/cluster-egress-template/templates/service-entry.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: foc-beta-ssr-example
+  labels:
+    helm-chart-release: cluster-egress-template-0.1.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  hosts:
+  - "*.foc.zone"
+  exportTo:
+  - "."
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: foc
+    protocol:  HTTPS 
+  resolution: NONE
+---
+# Source: app-template/charts/cluster-ingress-template/templates/virtual-service.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: beta-ssr-example
+  labels:
+    helm-chart-release: cluster-ingress-template-0.1.0
+    release: ssr-example
+    app-id: "207972"
+    app: beta-ssr-example
+    environment: beta
+    development-team-email: rockettechccesystems
+    deploy-date: 2020-12-10
+spec:
+  gateways:
+    - beta-ssr-example
+    - mesh
+  hosts:
+    - beta-ssr-example.ssr.svc.cluster.local
+    - "ssr-example.beta.ccessr.foc.zone"
+    - "us-east-2-ssr-example.beta.ccessr.foc.zone"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: beta-ssr-example.ssr.svc.cluster.local
+        subset: primary
+      weight: 100
