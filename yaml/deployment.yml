@@ -94,7 +94,7 @@ spec:
       serviceAccountName: beta-ssr-example
       containers:
         - name: beta-ssr-example
-          image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:REPLACE
+          image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:a8a9131ac0d33ed6dd235e4a18875fb94086bcf3
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 2000
