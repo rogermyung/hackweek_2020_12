@@ -4,45 +4,38 @@ global:
   appId: 207972
   appName: ssr-example
   environment: beta
-  developmentTeamEmail: RocketTechCCESystems  
-
+  developmentTeamEmail: RocketTechCCESystems
   deployment:
     primary:
       replicaCount: 1
       weight: "100"
       image:
-        - repository:  097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app
-          tag: REPLACE
-
+        - repository: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app
+          tag: 5c124c2f98606e7c453358907c41f19fc2c805d0
   healthCheck:
-      path: /
-      port: 8080
-
+    path: /
+    port: 8080
   environmentVariables:
     ASPNETCORE_ENVIRONMENT: beta
-
   service:
     enabled: true
     targetPort: 8080
-
   auth:
     internal:
-    - namespace:
-      name: scratch
-      serviceaccounts:
-      - name: "sleep"
-        methods: ["*"]
-        paths: ["/*"]
+      - namespace:
+        name: scratch
+        serviceaccounts:
+          - name: "sleep"
+            methods: ["*"]
+            paths: ["/*"]
     external:
       - type: anonymous
         methods: ["*"]
         paths: ["/*"]
-
   externalIngress:
     enabled: true
     type: istio
     externalUrl: "ssr-example.beta.ccessr.foc.zone"
-
   egress:
     enabled: true
     hosts:
