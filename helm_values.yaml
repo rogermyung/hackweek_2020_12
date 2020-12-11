@@ -11,7 +11,7 @@ global:
       weight: "100"
       image:
         - repository: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app
-          tag: 0c41f78a4236fae58ff725ca904a49f540ebca8b
+          tag: befd6895310ba3b33b4cd5d546b20f65ea69f1ee
   healthCheck:
     path: /
     port: 8080
