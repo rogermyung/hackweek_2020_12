@@ -11,7 +11,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
   annotations:
     eks.amazonaws.com/role-arn: "arn:aws:iam::097916242697:role/eks/role-eks-beta-207972-ssr-example-us-east-2"
 ---
@@ -27,7 +27,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   selector:
     app: beta-ssr-example
@@ -52,7 +52,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
     canary: "false"
 spec:
   replicas: 1
@@ -75,7 +75,7 @@ spec:
         app: beta-ssr-example
         environment: beta
         development-team-email: rockettechccesystems
-        deploy-date: 2020-12-11
+        deploy-date: 2020-12-15
         canary: "false"
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
@@ -94,7 +94,7 @@ spec:
       serviceAccountName: beta-ssr-example
       containers:
         - name: beta-ssr-example
-          image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:2a6c9246e8b535fe23fc05eb39cd757d46f33832
+          image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:16e79d22cf53aa755523f6ee66091ee8600c325d
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 2000
@@ -135,7 +135,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -170,7 +170,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   rules:
   - host: "ssr-example.beta.ccessr.foc.zone"
@@ -198,7 +198,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   selector:
     matchLabels:
@@ -230,7 +230,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   selector:
     matchLabels:
@@ -288,7 +288,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   selector:
     istio: ingressgateway
@@ -313,7 +313,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   hosts:
   - "*.foc.zone"
@@ -338,7 +338,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-11
+    deploy-date: 2020-12-15
 spec:
   gateways:
     - beta-ssr-example
