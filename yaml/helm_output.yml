@@ -5,13 +5,13 @@ kind: ServiceAccount
 metadata:
   name: beta-ssr-example
   labels:
-    helm-chart-release: app-template-0.6.0
+    helm-chart-release: app-template-0.6.1
     release: ssr-example
     app-id: "207972"
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
   annotations:
     eks.amazonaws.com/role-arn: "arn:aws:iam::097916242697:role/eks/role-eks-beta-207972-ssr-example-us-east-2"
 ---
@@ -27,7 +27,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   selector:
     app: beta-ssr-example
@@ -46,13 +46,13 @@ kind: Deployment
 metadata:
   name: beta-ssr-example
   labels:
-    helm-chart-release: app-template-0.6.0
+    helm-chart-release: app-template-0.6.1
     release: ssr-example
     app-id: "207972"
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
     canary: "false"
 spec:
   replicas: 1
@@ -69,13 +69,13 @@ spec:
   template:
     metadata:
       labels:
-        helm-chart-release: app-template-0.6.0
+        helm-chart-release: app-template-0.6.1
         release: ssr-example
         app-id: "207972"
         app: beta-ssr-example
         environment: beta
         development-team-email: rockettechccesystems
-        deploy-date: 2020-12-15
+        deploy-date: 2020-12-17
         canary: "false"
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
@@ -94,7 +94,7 @@ spec:
       serviceAccountName: beta-ssr-example
       containers:
         - name: beta-ssr-example
-          image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:16e79d22cf53aa755523f6ee66091ee8600c325d
+          image: 097916242697.dkr.ecr.us-east-2.amazonaws.com/eks-beta-208024-ssr_example_app:bb8c7417ca19dc668b5d72201be5267b40ab4417
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 2000
@@ -129,13 +129,13 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: beta-ssr-example
   labels:
-    helm-chart-release: app-template-0.6.0
+    helm-chart-release: app-template-0.6.1
     release: ssr-example
     app-id: "207972"
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -170,7 +170,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   rules:
   - host: "ssr-example.beta.ccessr.foc.zone"
@@ -198,7 +198,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   selector:
     matchLabels:
@@ -230,7 +230,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   selector:
     matchLabels:
@@ -288,7 +288,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   selector:
     istio: ingressgateway
@@ -313,7 +313,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   hosts:
   - "*.foc.zone"
@@ -338,7 +338,7 @@ metadata:
     app: beta-ssr-example
     environment: beta
     development-team-email: rockettechccesystems
-    deploy-date: 2020-12-15
+    deploy-date: 2020-12-17
 spec:
   gateways:
     - beta-ssr-example
